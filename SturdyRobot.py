@@ -78,6 +78,9 @@ class SturdyRobot(object):
         self.leftMotor.stop()
         self.rightMotor.stop()
 
+        # Stop the medium motor as well
+        self.mediumMotor.stop()
+
     def curve(self, leftSpeed, rightSpeed, time=None):
         leftSpeed = leftSpeed * self.leftMotor.max_speed
         rightSpeed = rightSpeed * self.rightMotor.max_speed
@@ -93,13 +96,20 @@ class SturdyRobot(object):
             self.rightMotor.run_timed(time_sp=time)
 
     def zeroPointer(self):
-        currentPosition = self.mediumMotor.position
-        self.mediumMotor.position_sp = -currentPosition
+        currentPosition = self.mediumMotor.position % 360
+        self.mediumMotor.position_sp = currentPosition
         self.mediumMotor.speed_sp = self.mediumMotor.max_speed
         self.mediumMotor.run_to_rel_pos()
 
     def pointerLeft(self, speed=1.0, time=None):
-        pass
+        # Calculate the speed of the motor
+        speedLeft = - (speed * self.mediumMotor.max_speed)
+        self.mediumMotor.speed_sp = speedLeft
+
+        if time is None:
+            self.mediumMotor.run_forever()
+        else:
+            self.mediumMotor.run_timed(time_sp=time)
 
     def pointerRight(self, speed=1.0, time=None):
         pass
