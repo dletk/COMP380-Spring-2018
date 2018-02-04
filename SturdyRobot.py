@@ -1,4 +1,5 @@
 import ev3dev.ev3 as ev3
+import time
 
 
 class SturdyRobot(object):
@@ -97,9 +98,15 @@ class SturdyRobot(object):
 
     def zeroPointer(self):
         currentPosition = self.mediumMotor.position % 360
-        self.mediumMotor.position_sp = currentPosition
-        self.mediumMotor.speed_sp = self.mediumMotor.max_speed
-        self.mediumMotor.run_to_rel_pos()
+        if currentPosition != 0:
+            if currentPosition <= 180:
+                self.mediumMotor.position_sp = -currentPosition
+            else:
+                self.mediumMotor.position_sp = 360-currentPosition
+            self.mediumMotor.speed_sp = self.mediumMotor.max_speed
+            self.mediumMotor.run_to_rel_pos()
+            self.mediumMotor.wait_until_not_moving()
+            # TODO: We should be able to set the position to 0 here, but unfortunately not
 
     def pointerLeft(self, speed=1.0, time=None):
         # Calculate the speed of the motor
@@ -112,7 +119,10 @@ class SturdyRobot(object):
             self.mediumMotor.run_timed(time_sp=time)
 
     def pointerRight(self, speed=1.0, time=None):
-        pass
+        self.pointerLeft(-speed, time)
 
     def pointerTo(self, angle):
-        pass
+        if angle <= 360 and angle >= 0:
+            self.mediumMotor.speed_sp = 0.5 * self.mediumMotor.max_speed
+            self.mediumMotor.position_sp = angle
+            self.mediumMotor.run_to_rel_pos()
