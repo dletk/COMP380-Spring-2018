@@ -42,38 +42,38 @@ class SturdyRobot(object):
             self.leftMotor.run_forever()
             self.rightMotor.run_forever()
         else:
-            self.leftMotor.run_timed(time_sp=time)
-            self.rightMotor.run_timed(time_sp=time)
+            self.leftMotor.run_timed(time_sp=time*1000)
+            self.rightMotor.run_timed(time_sp=time*1000)
 
     def backward(self, speed, time=None):
         # This method will call the forward method with a negative speed
         self.forward(-speed, time)
 
     def turnLeft(self, speed, time=None):
-        # The leftMotor stops while the right is running will make the SturdyRobot turn left
-        self.leftMotor.stop()
-
         # Calculate the speed of right motors
         speedTurnLeft = self.rightMotor.max_speed * speed
 
         self.rightMotor.speed_sp = speedTurnLeft
+        self.leftMotor.speed_sp = -speedTurnLeft
         if time is None:
             self.rightMotor.run_forever()
+            self.leftMotor.run_forever()
         else:
-            self.rightMotor.run_timed(time_sp=time)
+            self.rightMotor.run_timed(time_sp=time*1000)
+            self.leftMotor.run_timed(time_sp=time*1000)
 
     def turnRight(self, speed, time=None):
-        # The rightMotor stops while the left is running will make the robot turn right
-        self.rightMotor.stop()
-
         # Calculate the speed of left motors
         speedTurnRight = self.leftMotor.max_speed * speed
 
         self.leftMotor.speed_sp = speedTurnRight
+        self.rightMotor.speed_sp = -speedTurnRight
         if time is None:
             self.leftMotor.run_forever()
+            self.rightMotor.run_forever()
         else:
-            self.leftMotor.run_timed(time_sp=time)
+            self.leftMotor.run_timed(time_sp=time*1000)
+            self.rightMotor.run_timed(time_sp=time*1000)
 
     def stop(self):
         self.leftMotor.stop()
@@ -81,6 +81,10 @@ class SturdyRobot(object):
 
         # Stop the medium motor as well
         self.mediumMotor.stop()
+
+    def wait_until_not_moving(self):
+        self.leftMotor.wait_until_not_moving()
+        self.rightMotor.wait_until_not_moving()
 
     def curve(self, leftSpeed, rightSpeed, time=None):
         leftSpeed = leftSpeed * self.leftMotor.max_speed
@@ -93,8 +97,8 @@ class SturdyRobot(object):
             self.leftMotor.run_forever()
             self.rightMotor.run_forever()
         else:
-            self.leftMotor.run_timed(time_sp=time)
-            self.rightMotor.run_timed(time_sp=time)
+            self.leftMotor.run_timed(time_sp=time*1000)
+            self.rightMotor.run_timed(time_sp=time*1000)
 
     def zeroPointer(self):
         currentPosition = self.mediumMotor.position % 360
@@ -116,7 +120,7 @@ class SturdyRobot(object):
         if time is None:
             self.mediumMotor.run_forever()
         else:
-            self.mediumMotor.run_timed(time_sp=time)
+            self.mediumMotor.run_timed(time_sp=time*1000)
 
     def pointerRight(self, speed=1.0, time=None):
         self.pointerLeft(-speed, time)
