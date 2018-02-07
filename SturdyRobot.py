@@ -44,6 +44,7 @@ class SturdyRobot(object):
         else:
             self.leftMotor.run_timed(time_sp=time*1000)
             self.rightMotor.run_timed(time_sp=time*1000)
+            self.wait_until_not_moving()
 
     def backward(self, speed, time=None):
         # This method will call the forward method with a negative speed
@@ -61,6 +62,7 @@ class SturdyRobot(object):
         else:
             self.rightMotor.run_timed(time_sp=time*1000)
             self.leftMotor.run_timed(time_sp=time*1000)
+            self.wait_until_not_moving()
 
     def turnRight(self, speed, time=None):
         # Calculate the speed of left motors
@@ -74,6 +76,7 @@ class SturdyRobot(object):
         else:
             self.leftMotor.run_timed(time_sp=time*1000)
             self.rightMotor.run_timed(time_sp=time*1000)
+            self.wait_until_not_moving()
 
     def stop(self):
         self.leftMotor.stop()
@@ -81,10 +84,6 @@ class SturdyRobot(object):
 
         # Stop the medium motor as well
         self.mediumMotor.stop()
-
-    def wait_until_not_moving(self):
-        self.leftMotor.wait_until_not_moving()
-        self.rightMotor.wait_until_not_moving()
 
     def curve(self, leftSpeed, rightSpeed, time=None):
         leftSpeed = leftSpeed * self.leftMotor.max_speed
@@ -99,6 +98,7 @@ class SturdyRobot(object):
         else:
             self.leftMotor.run_timed(time_sp=time*1000)
             self.rightMotor.run_timed(time_sp=time*1000)
+            self.wait_until_not_moving()
 
     def zeroPointer(self):
         currentPosition = self.mediumMotor.position % 360
@@ -121,6 +121,7 @@ class SturdyRobot(object):
             self.mediumMotor.run_forever()
         else:
             self.mediumMotor.run_timed(time_sp=time*1000)
+            self.mediumMotor.wait_until_not_moving()
 
     def pointerRight(self, speed=1.0, time=None):
         self.pointerLeft(-speed, time)
@@ -130,3 +131,7 @@ class SturdyRobot(object):
             self.mediumMotor.speed_sp = 0.5 * self.mediumMotor.max_speed
             self.mediumMotor.position_sp = angle
             self.mediumMotor.run_to_rel_pos()
+
+    def wait_until_not_moving(self):
+        self.leftMotor.wait_until_not_moving()
+        self.rightMotor.wait_until_not_moving()
