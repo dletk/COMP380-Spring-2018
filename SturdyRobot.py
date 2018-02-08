@@ -111,6 +111,8 @@ class SturdyRobot(object):
             self.mediumMotor.run_to_rel_pos()
             self.mediumMotor.wait_until_not_moving()
             # TODO: We should be able to set the position to 0 here, but unfortunately not
+        time.sleep(0.5)
+        self.mediumMotor.reset()
 
     def pointerLeft(self, speed=1.0, time=None):
         # Calculate the speed of the motor
