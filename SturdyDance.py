@@ -2,7 +2,7 @@ from SturdyRobot import *
 import time as t
 
 robot = SturdyRobot("A")
-ev3.Sound.set_volume(10)
+ev3.Sound.set_volume(100)
 
 starSong = [('C4', 'q'), ('C4', 'q'), ('G4', 'q'), ('G4', 'q'),
             ('A4', 'q'), ('A4', 'q'), ('G4', 'h'),
@@ -18,7 +18,7 @@ def playSong():
 def dance(robot,speed,time=None):
     begin = t.time()
     playSong()
-    while t.time - begin < 30:
+    while t.time() - begin < 30:
         robot.curve(speed,speed/2,1)#trying to go in s curve
         t.sleep(0.5)
         robot.curve(speed/2,speed,1)
@@ -33,5 +33,5 @@ def dance(robot,speed,time=None):
         t.sleep(0.5)
         robot.pointerLeft(speed,2.5)
 
-        
+
 dance(robot,1,1)
