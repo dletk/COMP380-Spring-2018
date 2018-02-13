@@ -137,3 +137,6 @@ class SturdyRobot(object):
     def wait_until_not_moving(self):
         self.leftMotor.wait_until_not_moving()
         self.rightMotor.wait_until_not_moving()
+
+    def is_moving(self):
+        return self.leftMotor.is_running and self.rightMotor.is_running
