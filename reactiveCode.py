@@ -21,9 +21,11 @@ class Timid(object):
         elif self.us.distance_centimeters <= 10:
             self.robot.stop()
 
+
 class WaryBehavior(object):
     """This is the behavior to move forward until found an object, and move backward if
     that object is getting too close"""
+
     def __init__(self, robot=None):
         """Set up robot and sensors"""
         self.robot = robot
@@ -40,9 +42,11 @@ class WaryBehavior(object):
         elif self.us.distance_centimeters <= 10:
             self.robot.stop()
 
+
 class ExitCrowdBehavior(object):
     """This behaviour should turn in place when an obstacle is too close. When there is no Obstacle
     it should move forward in that direction."""
+
     def __init__(self, robot=None):
         """Set up robot and sensors"""
         self.robot = robot
@@ -58,6 +62,27 @@ class ExitCrowdBehavior(object):
             while self.us.distance_centimeters <= 15:
                 self.robot.turnLeft(0.2)
             self.robot.stop()
+
+class LineFollowing(object):
+    """This behavior should follow a black line"""
+
+    def __init__(self, robot=None):
+        "Set up the robot and sensors"
+        self.robot = robot
+        self.colorSensor = ev3.ColorSensor("in2")
+        self.colorSensor.mode = "COL-COLOR"
+
+    def run(self):
+        """The robot will follow a black line. If it is move out of the line, it will
+        turn left and right to find out where is the line"""
+        if not self.robot.is_moving() and self.colorSensor.value() == self.colorSensor.COLOR_BLACK:
+            self.robot.forward(0.2)
+        elif self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
+            self.robot.stop()
+            self.robot.turnLeft(0.1, 0.4)
+            if self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
+                self.robot.turnRight(0.1, 0.8)
+
 
 
 def runBehavior(behavObj, runTime=None):
@@ -83,9 +108,11 @@ if __name__ == '__main__':
     timBehav = Timid(robot=robot)  # pass robot object here if need be
     waryBehav = WaryBehavior(robot=robot)
     exitBehav = ExitCrowdBehavior(robot=robot)
+    lineFollowBehav = LineFollowing(robot=robot)
 
     # runBehavior(timBehav)
     # runBehavior(waryBehav)
-    runBehavior(exitBehav)
+    # runBehavior(exitBehav)
+    runBehavior(lineFollowBehav)
 
     # add code to stop robot motors
