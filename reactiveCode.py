@@ -79,6 +79,9 @@ class LineFollowing(object):
             self.robot.forward(0.2)
         elif self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
             self.robot.stop()
+            # Make the robot go backward a bit before ziggling to find black
+            self.robot.backward(0.2, 0.1)
+
             self.robot.turnLeft(0.1, 0.4)
             if self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
                 self.robot.turnRight(0.1, 0.8)
