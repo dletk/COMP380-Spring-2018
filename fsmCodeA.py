@@ -5,26 +5,29 @@ import time
 import ev3dev.ev3 as ev3
 from SturdyRobot import *
 
+
 class Timid(object):
     """This behavior should move forward at a fixed, not-too-fast speed if no object
     is close enough in front of it. When an object is detected, it should stop moving."""
-    def __init__(self, robot = None):
+
+    def __init__(self, robot=None):
         """Set up motors/robot and sensors here, set state to 'seeking' and forward
         speed to nonzero"""
         self.robot = robot
         self.us = ev3.UltrasonicSensor("in3")
         self.us.mode = "US-DIST-CM"
         self.state = 'seeking'
-        self.robot.forward(0.3)#<turn motors on>
+        self.robot.forward(0.3)  # <turn motors on>
 
     def run(self):
         """Updates the FSM by reading sensor data, then choosing based on the state"""
         if self.state == 'seeking' and self.us.distance_centimeters <= 10:
             self.state = 'found'
-            self.robot.stop()#<turn motors off>
+            self.robot.stop()  # <turn motors off>
         elif self.state == 'found' and self.us.distance_centimeters > 10:
             self.state = 'seeking'
             self.robot.forward(0.3)
+
 
 class WaryBehavior(object):
     """This is the behavior to move forward until found an object, and move backward if
@@ -42,7 +45,7 @@ class WaryBehavior(object):
 
     def updateSeeking(self):
         if self.us.distance_centimeters <= 10:
-            self.robot.stop()#<turn motors off>
+            self.robot.stop()  # <turn motors off>
             return 'found'
 
         return None
@@ -53,7 +56,7 @@ class WaryBehavior(object):
             return 'seeking'
         elif self.us.distance_centimeters <= 5:
             self.robot.backward(0.2)
-            return 'found' #but wary
+            return 'found'  # but wary
         return None
 
     def run(self):
@@ -63,7 +66,33 @@ class WaryBehavior(object):
         if newState is not None:
             self.state = newState
 
-def runBehavior(behavObj, runTime = None):
+
+class ExitCrowdBehavior(object):
+    """This behaviour should turn in place when an obstacle is too close. When there is no Obstacle
+    it should move forward in that direction."""
+
+    def __init__(self, robot=None):
+        """Set up robot and sensors"""
+        self.robot = robot
+        self.us = ev3.UltrasonicSensor("in3")
+        self.us.mode = "US-DIST-CM"
+        self.state = 'seeking'
+        self.robot.forward(0.3)
+
+    def run(self):
+        """The robot will run toward until found an object, and try to keep a certain distance
+        with that object"""
+        if self.state == 'seeking' and self.us.distance_centimeters <= 10:
+            self.state = 'found'
+            self.robot.stop()
+        elif self.state == 'found' and self.us.distance_centimeters <= 15:
+            self.robot.turnLeft(0.2)
+        elif self.state == "found"and self.us.distance_centimeters > 15:
+            self.state = "seeking"
+            self.robot.forward(0.3)
+
+
+def runBehavior(behavObj, runTime=None):
     """Takes in a behavior object and an optional time to run. It runs
     a loop that calls the run method of the behavObj over and over until
     either the time runs out or a button is pressed."""
@@ -86,6 +115,8 @@ if __name__ == '__main__':
     robot = SturdyRobot("teamA")
     timBehav = Timid(robot=robot)  # pass robot object here if need be
     waryBehav = WaryBehavior(robot=robot)
-    runBehavior(waryBehav)
+    exitBehav = ExitCrowdBehavior(robot=robot)
+
+    runBehavior(exitBehav)
 
     # add code to stop robot motors
