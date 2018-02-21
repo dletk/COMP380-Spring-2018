@@ -91,6 +91,42 @@ class ExitCrowdBehavior(object):
             self.state = "seeking"
             self.robot.forward(0.3)
 
+class LineFollowing(object):
+    """This behavior should follow a black line"""
+
+    def __init__(self, robot=None):
+        "Set up the robot and sensors"
+        self.robot = robot
+        self.colorSensor = ev3.ColorSensor("in4")
+        self.colorSensor.mode = "COL-COLOR"
+        self.state = 'seeking'
+        self.robot.forward(0.3)
+
+    def turn(self):
+        self.state = "seeking"
+        self.robot.stop()
+        # Make the robot go backward a bit before ziggling to find black
+        self.robot.backward(0.2, 0.1)
+        self.robot.turnLeft(0.1, 0.4)
+        if self.colorSensor.value() == self.colorSensor.COLOR_BLACK:
+            self.state = 'found'
+        elif self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
+            self.robot.turnRight(0.1, 0.8)
+            if self.colorSensor.value() == self.colorSensor.COLOR_BLACK:
+                self.state = 'found'
+
+    def run(self):
+        """The robot will follow a black line. If it is move out of the line, it will
+        turn left and right to find out where is the line"""
+        if self.state == "seeking" and self.colorSensor.value() == self.colorSensor.COLOR_BLACK:
+            self.state = "found"
+        elif self.state =='found' and self.colorSensor.value() == self.colorSensor.COLOR_BLACK:
+            self.robot.forward(0.2)
+        elif self.state == "found" and self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
+            self.turn()
+        elif self.state == "seeking" and self.colorSensor.value() != self.colorSensor.COLOR_BLACK:
+            self.turn()
+
 
 def runBehavior(behavObj, runTime=None):
     """Takes in a behavior object and an optional time to run. It runs
@@ -116,7 +152,8 @@ if __name__ == '__main__':
     timBehav = Timid(robot=robot)  # pass robot object here if need be
     waryBehav = WaryBehavior(robot=robot)
     exitBehav = ExitCrowdBehavior(robot=robot)
+    lineFollowBehav = LineFollowing(robot=robot)
 
-    runBehavior(exitBehav)
+    runBehavior(lineFollowBehav)
 
     # add code to stop robot motors
