@@ -15,6 +15,9 @@ class SturdyRobot(object):
     ULTRA_SENSOR = 'ultra-sensor'
     COLOR_SENSOR = 'color-sensor'
     GYRO_SENSOR = 'gyro-sensor'
+
+    # ---------------------------------------------------------------------------
+    # The default config that the program will use if no config is given
     DEFAULT_CONFIG = {ULTRA_SENSOR: "in3", LEFT_TOUCH: "in2",
                       COLOR_SENSOR: "in4", GYRO_SENSOR: "in1"}
 
@@ -27,9 +30,7 @@ class SturdyRobot(object):
         super(SturdyRobot, self).__init__()
         self.name = name
 
-        # self.leftMotorPort = leftMotorPort
-        # self.rightMotorPort = rightMotorPort
-        # self.mediumMotorPort = mediumMotorPort
+        # TODO: Comment on all of the methods
 
         self.leftMotor = None
         self.rightMotor = None
