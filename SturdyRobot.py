@@ -297,6 +297,8 @@ class SturdyRobot(object):
             # TODO: We should be able to set the position to 0 here, but unfortunately not
         time.sleep(0.5)
         self.mediumMotor.reset()
+        # After reset the pointer, make sure the pointer stop_action is "hold"
+        self.mediumMotor.stop_action = "hold"
 
     def pointerLeft(self, speed=1.0, time=None):
         # Calculate the speed of the motor
