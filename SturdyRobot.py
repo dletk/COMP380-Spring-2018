@@ -26,7 +26,7 @@ class SturdyRobot(object):
     def __init__(self, name, configDict=None):
         """ Take the configuration of the robot and set up the robot
         Default config:
-        {SturdyRobot.ULTRA_SENSOR: "in3", SturdyRobot.LEFT_TOUCH: "in2", SturdyRobot.COLOR_SENSOR: "in4", SturdyRobot.GYRO_SENSOR: "in1"}"""
+        {SturdyxRobot.ULTRA_SENSOR: "in3", SturdyRobot.LEFT_TOUCH: "in2", SturdyRobot.COLOR_SENSOR: "in4", SturdyRobot.GYRO_SENSOR: "in1"}"""
         super(SturdyRobot, self).__init__()
         self.name = name
 
@@ -126,6 +126,9 @@ class SturdyRobot(object):
             self.gyroSensor.mode = "GYRO-CAL"
             time.sleep(0.2)
             self.gyroSensor.mode = "GYRO-ANG"
+            self.gyroSensor.mode = "GYRO-CAL"
+            time.sleep(0.2)
+            self.gyroSensor.mode = "GYRO-ANG"
         else:
             print("Cannot find gyro sensor")
 
@@ -148,6 +151,15 @@ class SturdyRobot(object):
             if self.colorSensor.mode != "COL-REFLECT":
                 self.colorSensor.mode = "COL-REFLECT"
             return self.colorSensor.reflected_light_intensity
+        else:
+            print("There is no color sensor set up")
+
+    def readAmbient(self):
+        """Read the value of ambient light from the color sensor """
+        if self.colorSensor is not None:
+            if self.colorSensor.mode != "COL-AMBIENT'":
+                self.colorSensor.mode = "COL-AMBIENT"
+            return self.colorSensor.ambient_light_intensity
         else:
             print("There is no color sensor set up")
 
@@ -290,6 +302,7 @@ class SturdyRobot(object):
             self.mediumMotor.speed_sp = 0.5 * self.mediumMotor.max_speed
             self.mediumMotor.position_sp = angle
             self.mediumMotor.run_to_rel_pos()
+        self.mediumMotor.wait_until_not_moving()
 
     def wait_until_not_moving(self):
         self.leftMotor.wait_until_not_moving()
