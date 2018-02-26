@@ -58,6 +58,7 @@ class SturdyRobot(object):
         # Make sure the motors stop at exact position
 
     def setupSensorsMotors(self, configDict):
+        """Method to set up all the sensors and motors based on the input configuration"""
         for item in configDict:
             port = configDict[item]
             if item == self.LEFT_MOTOR:
@@ -80,15 +81,18 @@ class SturdyRobot(object):
                 print("Error while setting the item: " + item)
 
     def reset(self):
+        """Method to reset all the motors back to their original setting """
         self.rightMotor.reset()
         self.leftMotor.reset()
         self.mediumMotor.reset()
 
+        # Make the stop action of any motor to be hold to maintain its position
         self.rightMotor.stop_action = "hold"
         self.leftMotor.stop_action = "hold"
         self.mediumMotor.stop_action = "hold"
 
     def setupTouchSensor(self, side, port):
+        """Method to set up the touch sensor based on input side and port"""
         if side == self.LEFT_TOUCH:
             self.leftTouch = ev3.TouchSensor(port)
         elif side == self.RIGHT_TOUCH:
@@ -97,17 +101,23 @@ class SturdyRobot(object):
             print("Incorrect value for side")
 
     def setGyroSensor(self, port):
+        """Method to set up the gyro sensor"""
         self.gyroSensor = ev3.GyroSensor(port)
         self.setHeading()
 
     def setUltrasonicSensor(self, port):
+        """Method to set up the ultrasonic sensor."""
         self.ultraSensor = ev3.UltrasonicSensor(port)
+
+        # Using continuous measuring mode
         self.ultraSensor.mode = "US-DIST-CM"
 
     def setColorSensor(self, port):
+        """Method to set up the color sensor"""
         self.colorSensor = ev3.ColorSensor(port)
 
     def setMotors(self, side, port):
+        """Method to set up the motors, based on given input side and port"""
         if side == self.LEFT_MOTOR:
             self.leftMotor = ev3.LargeMotor(port)
             self.leftMotor.stop_action = "hold"
@@ -198,6 +208,8 @@ class SturdyRobot(object):
             print("Cannot find gyro sensor")
 
     def forward(self, speed, time=None):
+        """Make the robot move forward with the given speed. If there is no given time,
+        the robot would move forerver"""
         # To calculate the speed of the motor, use this formula: speed * max_speed
         # and then set the speed of the motors to that speed
         leftSpeed = speed * self.leftMotor.max_speed
@@ -216,10 +228,13 @@ class SturdyRobot(object):
             self.wait_until_not_moving()
 
     def backward(self, speed, time=None):
+        """Make the robot to move backward with the given speed"""
         # This method will call the forward method with a negative speed
         self.forward(-speed, time)
 
     def turnLeft(self, speed, time=None):
+        """Make the robot to turn left inplace with the given speed.
+        If there is no given time, the robot keeps turning forever"""
         # Calculate the speed of right motors
         speedTurnLeft = self.rightMotor.max_speed * speed
 
@@ -309,4 +324,5 @@ class SturdyRobot(object):
         self.rightMotor.wait_until_not_moving()
 
     def is_moving(self):
-        return self.leftMotor.is_running and self.rightMotor.is_running
+        """Check whether any of the Large mortor is running"""
+        return self.leftMotor.is_running or self.rightMotor.is_running
