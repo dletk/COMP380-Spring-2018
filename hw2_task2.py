@@ -37,7 +37,8 @@ def findLight():
     print("===> Set heading: ", robot.readHeading())
 
     # Turn the robot back to the location where it found the max ambience
-    # Because the robot stops at 330 degree, we turn 2 more times to make it back to origin
+    # Because the robot stops at 330 degree, we turn 3 more times to make it back to origin
+    # Each of our turn is approximately 10 degrees
     for i in range(max_ambience_turn_count + 3):
         robot.turnRight(SPEED_TURN, 0.2)
 
@@ -52,16 +53,20 @@ def findLight():
 
 
 def comfortZone():
+    """Method to find the comfort zone for the robot to begin measure ambience"""
+    # If the robot is too close with a wall in front, or if it is touching the wall
     if robot.readDistance() < DISTANCE_TO_WALL or robot.readTouch()[0] == 1:
         robot.backward(SPEED_MOVEMENT, 0.5)
         return False
 
+    # Check whether the robot is too close to a wall on the left
     robot.pointerLeft(time=0.1)
     if robot.readDistance() < DISTANCE_TO_WALL:
         robot.turnRight(SPEED_MOVEMENT, 0.2)
         robot.forward(SPEED_MOVEMENT, 0.5)
         return False
 
+    # Check whether the robot is too close to a wall on the right
     robot.zeroPointer()
     robot.pointerTo(90)
     if robot.readDistance() < DISTANCE_TO_WALL:
@@ -78,19 +83,18 @@ def followWall():
     robot.pointerRight(time=0.3)
 
 
-robot = SturdyRobot("A")
-ev3.Sound.beep()
+if __name__ == '__main__':
+    robot = SturdyRobot("A")
+    ev3.Sound.beep()
+    robot_out = False
+    while not robot_out:
+        while comfortZone():
+            if findLight():
+                robot_out = True
+                break
 
-robot_out = False
-
-while not robot_out:
-    while comfortZone():
-        if findLight():
-            robot_out = True
-            break
-
-starSong = [('C4', 'q'), ('C4', 'q'), ('G4', 'q'), ('G4', 'q'),
-            ('A4', 'q'), ('A4', 'q'), ('G4', 'h'),
-            ('F4', 'q'), ('F4', 'q'), ('E4', 'q'), ('E4', 'q'),
-            ('D4', 'q'), ('D4', 'q'), ('C4', 'h')]
-ev3.Sound.play_song(starSong).wait()
+    starSong = [('C4', 'q'), ('C4', 'q'), ('G4', 'q'), ('G4', 'q'),
+                ('A4', 'q'), ('A4', 'q'), ('G4', 'h'),
+                ('F4', 'q'), ('F4', 'q'), ('E4', 'q'), ('E4', 'q'),
+                ('D4', 'q'), ('D4', 'q'), ('C4', 'h')]
+    ev3.Sound.play_song(starSong).wait()
