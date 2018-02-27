@@ -52,7 +52,7 @@ def findLight():
 
 
 def comfortZone():
-    if robot.readDistance() < DISTANCE_TO_WALL:
+    if robot.readDistance() < DISTANCE_TO_WALL or robot.readTouch()[0] == 1:
         robot.backward(SPEED_MOVEMENT, 0.5)
         return False
 
