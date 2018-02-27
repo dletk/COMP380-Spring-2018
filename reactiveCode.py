@@ -112,6 +112,7 @@ if __name__ == '__main__':
     waryBehav = WaryBehavior(robot=robot)
     exitBehav = ExitCrowdBehavior(robot=robot)
     lineFollowBehav = LineFollowing(robot=robot)
+    
 
     # runBehavior(timBehav)
     # runBehavior(waryBehav)

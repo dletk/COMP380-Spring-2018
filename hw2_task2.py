@@ -3,6 +3,7 @@ import random
 
 SPEED_MOVEMENT = 0.4
 SPEED_TURN = 0.1
+DISTANCE_TO_WALL = 20
 
 
 def findLight():
@@ -20,6 +21,7 @@ def findLight():
     while heading <= 330:
         # Check to see whether there is a new max ambience intensity found
         current_ambience_intensity = robot.readAmbient()
+        print(current_ambience_intensity)
         if current_ambience_intensity > max_ambience_intensity:
             max_ambience_intensity = current_ambience_intensity
             max_ambience_turn_count = turn_count
@@ -35,27 +37,34 @@ def findLight():
     print("===> Set heading: ", robot.readHeading())
 
     # Turn the robot back to the location where it found the max ambience
-    for i in range(turn_count):
+    # Because the robot stops at 330 degree, we turn 2 more times to make it back to origin
+    for i in range(max_ambience_turn_count + 3):
         robot.turnRight(SPEED_TURN, 0.2)
 
     robot.stop()
-    robot.forward(SPEED_MOVEMENT, 0.5)
+    # 7 is the thresh hold of the exit lighting
+    if max_ambience_intensity >= 6:
+        robot.forward(SPEED_MOVEMENT, 3)
+        return True
+    else:
+        robot.forward(SPEED_MOVEMENT, 0.5)
+        return False
 
 
 def comfortZone():
-    if robot.readDistance() < 15:
+    if robot.readDistance() < DISTANCE_TO_WALL:
         robot.backward(SPEED_MOVEMENT, 0.5)
         return False
 
     robot.pointerLeft(time=0.1)
-    if robot.readDistance() < 15:
+    if robot.readDistance() < DISTANCE_TO_WALL:
         robot.turnRight(SPEED_MOVEMENT, 0.2)
         robot.forward(SPEED_MOVEMENT, 0.5)
         return False
 
     robot.zeroPointer()
     robot.pointerTo(90)
-    if robot.readDistance() < 15:
+    if robot.readDistance() < DISTANCE_TO_WALL:
         robot.turnLeft(SPEED_MOVEMENT, 0.2)
         robot.forward(SPEED_MOVEMENT, 0.5)
         return False
@@ -72,6 +81,16 @@ def followWall():
 robot = SturdyRobot("A")
 ev3.Sound.beep()
 
-while True:
+robot_out = False
+
+while not robot_out:
     while comfortZone():
-        findLight()
+        if findLight():
+            robot_out = True
+            break
+
+starSong = [('C4', 'q'), ('C4', 'q'), ('G4', 'q'), ('G4', 'q'),
+            ('A4', 'q'), ('A4', 'q'), ('G4', 'h'),
+            ('F4', 'q'), ('F4', 'q'), ('E4', 'q'), ('E4', 'q'),
+            ('D4', 'q'), ('D4', 'q'), ('C4', 'h')]
+ev3.Sound.play_song(starSong).wait()
