@@ -78,11 +78,6 @@ def comfortZone():
     return True
 
 
-def followWall():
-    # assume robot in the middle of box
-    robot.pointerRight(time=0.3)
-
-
 if __name__ == '__main__':
     robot = SturdyRobot("A")
     ev3.Sound.beep()
