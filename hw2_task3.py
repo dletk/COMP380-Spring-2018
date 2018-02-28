@@ -5,7 +5,7 @@ def followWall():
     """Making the robot to follow a wall of the maze."""
     # robot.pointerTo(90)
     distance_to_wall = robot.readDistance()
-    while distance_to_wall < 20:
+    while robot.readTouch()[0] != 1:
         robot.forward(0.2, 0.5)
         print("====> Distance: ", distance_to_wall)
         if distance_to_wall < 15:
@@ -27,6 +27,12 @@ def followWall():
                     robot.turnRight(0.1, 0.2)
                     robot_heading = robot.readHeading()
         distance_to_wall = robot.readDistance()
+    # Check whether there is a turn or just a go too far
+    # if distance_to_wall > 25:
+        # There is a turn
+    robot.backward(0.2,0.3)
+    robot.turnExact90()
+    robot.forward(0.5, 1)
 
 
 robot = SturdyRobot('A')

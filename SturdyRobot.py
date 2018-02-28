@@ -262,6 +262,32 @@ class SturdyRobot(object):
             self.rightMotor.run_timed(time_sp=time * 1000)
             self.wait_until_not_moving()
 
+    def turnExact90(self, side="right", resetHeading=True):
+        """Method to make the robot turn exactly 90 degree.
+        This method make the robot turn 90 degree based on its current heading.
+        After turning, user can set resetHeading to False if they do not want to
+        reset the heading (not recommended)
+        """
+        self.setHeading()
+        current_heading = self.readHeading()
+        if side == "right":
+            # The turning will be considered as complete as long as the robot reaches 89 degrees
+            while current_heading < 89:
+                self.turnRight(0.08, 0.1)
+                current_heading = self.readHeading()
+        elif side == "left":
+            # The turning will be considered as complete as long as the robot reaches to 271 degrees position
+            # The current position of the robot is 0, not 360
+            while current_heading > 271 or current_heading == 0:
+                self.turnLeft(0.08, 0.1)
+                current_heading = self.readHeading()
+        else:
+            print("Invalid side input")
+        print("=====> Current heading: ", current_heading)
+        if resetHeading:
+            self.setHeading()
+
+
     def stop(self):
         self.leftMotor.stop()
         self.rightMotor.stop()
