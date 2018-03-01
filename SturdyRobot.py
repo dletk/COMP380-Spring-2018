@@ -70,7 +70,7 @@ class SturdyRobot(object):
             elif item == self.LEFT_TOUCH:
                 self.setupTouchSensor(item, port)
             elif item == self.RIGHT_TOUCH:
-                self.setTouchSensor(item, port)
+                self.setupTouchSensor(item, port)
             elif item == self.ULTRA_SENSOR:
                 self.setUltrasonicSensor(port)
             elif item == self.GYRO_SENSOR:

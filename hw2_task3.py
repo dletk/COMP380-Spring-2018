@@ -1,60 +1,54 @@
 from SturdyRobot import *
 
 
+# New approach:
+# Corner = false
+# While color is not found:
+# go forward until both touch sensor is 1
+# Check if there is the matched color
+# Backward by a distance X
+# If corner then turn 180 else turn 90 to right
+# Go forward by 2X
+# if there is touch, check color, and remember corner = true
+# Go backward by X
+# Turn left
+
+# X  = 0.5,0.5
+
+SPEED_MOVEMENT = 0.05
+TIME_MOVE = 2
+
+
 def followWall():
-    """Making the robot to follow a wall of the maze."""
-    # robot.pointerTo(90)
-    following_wall = True
-    distance_to_wall = robot.readDistance()
-    # while robot.readTouch()[0] != 1:
-    # robot.forward(0.2, 0.5)
-    print("====> Distance: ", distance_to_wall)
-    if distance_to_wall > 20:
-        # There is a right turn
-        robot.forward(0.5, 0.4)
-        robot.turnExact90()
-        robot.forward(0.5, 0.3)
-        following_wall = False
-    # Too close to wall
-    elif distance_to_wall > 5:
-        # Too far away from the wall
+    corner = False
+    foundColor = False
+    while not foundColor:
+        robot.forward(SPEED_MOVEMENT)
+        while robot.readTouch() != (1, 1):
+            pass
         robot.stop()
-        robot.turnRight(0.3, 0.1)
-        robot.forward(0.3, 0.2)
-        following_wall = True
-    elif distance_to_wall < 15:
-        robot.stop()
-        robot.turnLeft(0.3, 0.1)
-        robot.forward(0.3, 0.2)
-        following_wall = True
-
-    if following_wall:
-        robot_heading = robot.readHeading()
-        print("Current heading: ", robot_heading)
-        # too much to right
-        if robot_heading <= 90 and robot_heading > 3:
-            while robot_heading >= 3:
-                # print("Heading too right: ", robot_heading)
-                robot.turnLeft(0.05, 0.1)
-                robot_heading = robot.readHeading()
-        # too much to left
-        elif robot_heading >= 270 and robot_heading < 357:
-            while robot_heading <= 357:
-                # print("Heading too left: ", robot_heading)
-                robot.turnRight(0.05, 0.1)
-                robot_heading = robot.readHeading()
-        robot.forward(0.4, 0.2)
         if robot.readColor() == 6:
-            ev3.Sound.beep()
-    distance_to_wall = robot.readDistance()
+            return True
+        robot.backward(SPEED_MOVEMENT, TIME_MOVE)
+        if corner:
+            robot.turnExact90()
+            robot.turnExact90()
+            # Here, we already moved to the direction of new wall, so reset corner
+            corner = False
+        else:
+            robot.turnExact90()
+        robot.forward(SPEED_MOVEMENT, 2 * TIME_MOVE)
+        if robot.readTouch() == (1, 1):
+            if robot.readColor() == 6:
+                return True
+            corner = True
+        robot.backward(SPEED_MOVEMENT, TIME_MOVE)
+        robot.turnExact90(side="left")
 
-    # There is left turn
 
-    # robot.backward(0.2,0.3)
+config = {SturdyRobot.RIGHT_TOUCH: "in3", SturdyRobot.LEFT_TOUCH: "in2",
+          SturdyRobot.COLOR_SENSOR: "in4", SturdyRobot.GYRO_SENSOR: "in1"}
 
-    # TODO: Check if there is a white color
-
-
-robot = SturdyRobot('A')
+robot = SturdyRobot('A', configDict=config)
 while True:
     followWall()
