@@ -29,7 +29,7 @@ def foundTouch():
         # Repeat the touch 5 times so we can be sure which side is touched
         for i in range(2):
             robot.backward(SPEED_MOVEMENT, TIME_MOVE / 2)
-            robot.forward(SPEED_MOVEMENT, TIME_MOVE / 1.6)
+            robot.forward(SPEED_MOVEMENT, TIME_MOVE)
             touch = robot.readTouch()
             if touch == (1, 1):
                 return (True, touch)
@@ -77,6 +77,13 @@ def followWall():
 config = {SturdyRobot.RIGHT_TOUCH: "in3", SturdyRobot.LEFT_TOUCH: "in2",
           SturdyRobot.COLOR_SENSOR: "in4", SturdyRobot.GYRO_SENSOR: "in1"}
 
+starSong = [('C4', 'q'), ('C4', 'q'), ('G4', 'q'), ('G4', 'q'),
+            ('A4', 'q'), ('A4', 'q'), ('G4', 'h'),
+            ('F4', 'q'), ('F4', 'q'), ('E4', 'q'), ('E4', 'q'),
+            ('D4', 'q'), ('D4', 'q'), ('C4', 'h')]
+
 robot = SturdyRobot('A', configDict=config)
 while True:
-    followWall()
+    if followWall():
+        ev3.Sound.play_song(starSong).wait()
+        break
