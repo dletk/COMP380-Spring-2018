@@ -202,7 +202,7 @@ class SturdyRobot(object):
                 return abs(self.gyroSensor.angle) % 360
             else:
                 # If the angle is positive, that means the robot has turned left
-                return (360 * (angle // 360 + 1) - angle) % 360
+                return (360 - angle % 360) % 360
 
         else:
             print("Cannot find gyro sensor")
@@ -286,7 +286,6 @@ class SturdyRobot(object):
         print("=====> Current heading: ", current_heading)
         if resetHeading:
             self.setHeading()
-
 
     def stop(self):
         self.leftMotor.stop()
