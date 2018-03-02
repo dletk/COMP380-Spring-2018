@@ -7,6 +7,7 @@ DISTANCE_TO_WALL = 20
 
 
 def findLight():
+    """Method to find the maximum ambient light intensity and go to that direction."""
     # Set the current heaiding of the robot
     robot.setHeading()
     # ------ Variables to store the maximum light intensity and its angle
@@ -43,7 +44,7 @@ def findLight():
         robot.turnRight(SPEED_TURN, 0.2)
 
     robot.stop()
-    # 7 is the thresh hold of the exit lighting
+    # 6 is the thresh hold of the exit lighting
     if max_ambience_intensity >= 6:
         robot.forward(SPEED_MOVEMENT, 3)
         return True
