@@ -133,7 +133,7 @@ class RobotArm(object):
             self.vertical_move_motor.run_forever()
         else:
             # Time is in seconds, so convert it to miliseconds
-            self.vertical_move_motor.run_timed(time_sp=time*1000)
+            self.vertical_move_motor.run_timed(time_sp=time * 1000)
 
     def moveDown(self, speed, time=None):
         """Method to move the arm down with speed from 0 to 1. If there is no given
