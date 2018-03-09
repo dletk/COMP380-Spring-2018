@@ -1,6 +1,6 @@
 import cv2
 
-image1 = cv2.imread("TestImages/SnowLeo1.jpg")
+image1 = cv2.imread("../TestImages/SnowLeo1.jpg")
 if image1 is None:
     print("Error reading image")
 else:
