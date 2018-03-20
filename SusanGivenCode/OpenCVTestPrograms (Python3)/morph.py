@@ -17,27 +17,27 @@ def update(dummy=None):
         size = abs(size)
     else:
         op = currOpMode[0]
-   
+
     size = 2 * size + 1
 
     structElem = whichStructElem(currStructMode)
     operName = whichOper(op)
     st = cv2.getStructuringElement(structElem, (size,size))
     res = cv2.morphologyEx(img, operName, st, iterations=iters)
-   
+
     cv2.putText(res,  'mode: ' + "/".join(currOpMode), (10, 20),
                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
-    cv2.putText(res, 'operation: ' + op, (10, 40), 
+    cv2.putText(res, 'operation: ' + op, (10, 40),
                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
-    cv2.putText(res, 'structure: ' + currStructMode, (10, 60), 
+    cv2.putText(res, 'structure: ' + currStructMode, (10, 60),
                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
-    cv2.putText(res, 'ksize: %d  iters: %d' % (size, iters), (10, 80), 
+    cv2.putText(res, 'ksize: %d  iters: %d' % (size, iters), (10, 80),
                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
     cv2.imshow('morphology', res)
 
 def whichStructElem(structMode):
-    structElems = {'ellipse': cv2.MORPH_ELLIPSE, 
-                   'rect': cv2.MORPH_RECT, 
+    structElems = {'ellipse': cv2.MORPH_ELLIPSE,
+                   'rect': cv2.MORPH_RECT,
                    'cross': cv2.MORPH_CROSS}
     return structElems[structMode]
 
@@ -52,16 +52,16 @@ def whichOper(op):
     return operations[op]
 
 
-    
+
 if __name__ == '__main__':
-    fn = 'TestImages/SnowLeo2.jpg'
+    fn = '/Users/DucLe/Developer/COMP380/openCV_code/TestImages/SnowLeo2.jpg'
     img = cv2.imread(fn)
 
     modes = [('erode', 'dilate'), ('open', 'close'), ('blackhat', 'tophat'), ('gradient',)]
     modeIndex = 0
     structModes = ['ellipse', 'rect', 'cross']
     sModeIndex = 0
-    
+
     currOpMode = modes[modeIndex]
     currStructMode = structModes[sModeIndex]
 
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     while True:
         code = cv2.waitKey()
         ch = chr(code & 0xFF)
-        if ch == 'q': 
+        if ch == 'q':
             break
         if ch == '1':
             modeIndex = (modeIndex + 1) % len(modes)
@@ -86,4 +86,3 @@ if __name__ == '__main__':
             currStructMode = structModes[sModeIndex]
         update()
     cv2.destroyAllWindows()
-

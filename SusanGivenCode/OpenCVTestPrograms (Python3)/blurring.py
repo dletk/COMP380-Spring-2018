@@ -1,9 +1,9 @@
 import cv2
 import numpy
 
-img1 = cv2.imread("TestImages/SnowLeo2.jpg")
+img1 = cv2.imread("/Users/DucLe/Developer/COMP380/openCV_code/TestImages/SnowLeo2.jpg")
 cv2.imshow("SnowGuy Original", img1)
-        
+
 
 kWid = 3
 kHgt = 3
@@ -16,10 +16,10 @@ while True:
     else:
         blurImg = cv2.GaussianBlur(img1, (kWid, kHgt), 0)
         descrString = "Gauss blur width = " + str(kWid) + ", height = " + str(kHgt)
-        
-    cv2.putText(blurImg, descrString, (5, 15), 
+
+    cv2.putText(blurImg, descrString, (5, 15),
                 cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 0))
-    cv2.imshow("Blurred Image", blurImg)    
+    cv2.imshow("Blurred Image", blurImg)
     code = cv2.waitKey(0)
     char = chr(code & 0xFF)
     if char == 'q':
