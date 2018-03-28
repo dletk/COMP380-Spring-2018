@@ -27,7 +27,7 @@ if __name__ == '__main__':
             difference_image, cv2.MORPH_BLACKHAT, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2)))
 
         enhanced_edges_image = cv2.GaussianBlur(
-            enhanced_edges_image, (5, 5), 0)
+            enhanced_edges_image, (9, 9), 0)
 
         gray_image = cv2.cvtColor(enhanced_edges_image, cv2.COLOR_BGR2GRAY)
 
