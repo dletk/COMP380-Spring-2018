@@ -27,27 +27,27 @@ if __name__ == '__main__':
             difference_image, cv2.MORPH_BLACKHAT, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2)))
 
         enhanced_edges_image = cv2.GaussianBlur(
-            enhanced_edges_image, (9, 9), 0)
+            enhanced_edges_image, (5, 5), 0)
 
         gray_image = cv2.cvtColor(enhanced_edges_image, cv2.COLOR_BGR2GRAY)
 
         ret, thresh = cv2.threshold(gray_image, 5, 255, cv2.THRESH_BINARY)
 
-        # Erosion to eliminate too small contours
-        erode_kernel = (3,3)
-        eroded_image = cv2.erode(thresh, erode_kernel, iterations=5)
-        # Dilation to connect the close contor
+
+        # Dilation eliminate too small contours
         # Loop several time
-        dilated_kernel = (500, 500)
-        # dilated_image = cv2.dilate(thresh, dilated_kernel)
-        # for i in range(20):
-        dilated_image = cv2.dilate(eroded_image, dilated_kernel, iterations=20)
+        dilated_kernel = (100, 100)
+        dilated_image = cv2.dilate(thresh, dilated_kernel, iterations=10)
+
+        erode_kernel = (5,5)
+        eroded_image = cv2.erode(dilated_image, erode_kernel, iterations=10)
 
         image, contours, hier = cv2.findContours(
-            dilated_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            eroded_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         print("===> VIDEO CONTOURS: ", len(contours))
-        # result_image = cv2.drawContours(
-        #     frame2, contours, -1, (0, 255, 0))
+
+        result_image = cv2.drawContours(
+            frame2, contours, -1, (0, 255, 0))
 
         # Drawing the rectanle around the contours
         for contour in contours:
