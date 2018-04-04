@@ -81,23 +81,28 @@ def UCSRoute(graph, startVert, goalVert):
     if startVert == goalVert:
         return []
     q = PriorityQueue()
-    q.insert(startVert, 0)
-    visited = {startVert}
-    pred = {startVert: None}
+    q.insert(0, startVert)
+    visited = set()
+    pred = {}
     while not q.isEmpty():
-        nextVert, weight = q.firstElement()
+        weight, nextVert = q.firstElement()
         q.delete()
+        if nextVert in visited:
+            pass
+        else:
+            visited.add(nextVert)
+            if nextVert == goalVert:
+                return reconstructPath(startVert, goalVert, pred)
         neighbors = graph.getNeighbors(nextVert)
         for n in neighbors:
             if type(n) != int:
-                # weighted graph, strip and ignore weights
-                n = n[0]
-                weight_n = n[1]
+                weight_n = n[0]
+                n = n[1]
             if n not in visited:
                 visited.add(n)
                 pred[n] = nextVert
                 if n != goalVert:
-                    q.insert(n, weight + weight_n)
+                    q.insert(weight + weight_n, n)
                 else:
                     return reconstructPath(startVert, goalVert, pred)
     return "NO PATH"
