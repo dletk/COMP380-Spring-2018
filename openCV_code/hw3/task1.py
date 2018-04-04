@@ -5,7 +5,8 @@ def calculateAbsDiff(img1, img2):
     return cv2.absdiff(img1, img2)
 
 if __name__ == '__main__':
-    videoCap = cv2.VideoCapture(0)
+    # Using the external webcam
+    videoCap = cv2.VideoCapture(1)
 
     ret, frame = videoCap.read()
     ret, frame2 = videoCap.read()
@@ -28,7 +29,7 @@ if __name__ == '__main__':
         # Dilation eliminate too small contours
         # Loop several time
         dilated_kernel = (10, 10)
-        dilated_image = cv2.dilate(thresh, dilated_kernel, iterations=50)
+        dilated_image = cv2.dilate(thresh, dilated_kernel, iterations=10)
 
         erode_kernel = (5,5)
         eroded_image = cv2.erode(dilated_image, erode_kernel, iterations=10)
