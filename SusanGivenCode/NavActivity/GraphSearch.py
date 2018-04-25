@@ -93,9 +93,9 @@ def UCSRoute(graph, startVert, goalVert):
             visited.add(nextVert)
             pred[nextVert] = predNextvert
             if nextVert == goalVert:
+                print("UCS number of visited: ", len(visited))
                 return reconstructPath(startVert, goalVert, pred)
             neighbors = graph.getNeighbors(nextVert)
-            print(neighbors)
             for n in neighbors:
                 if type(n) != int:
                     # NOTICE: From getNeighbors, the order is (vert, weight)
@@ -103,6 +103,38 @@ def UCSRoute(graph, startVert, goalVert):
                     n = n[0]
                 if n not in visited:
                     q.insert(weight + weight_n, (n, nextVert))
+    return "NO PATH"
+
+def AStarRoute(graph, startVert, goalVert):
+    """This algorithm search a graph using A star Search algorithm"""
+    if startVert == goalVert:
+        return []
+    q = PriorityQueue()
+    q.insert(0, (startVert, None))
+    visited = set()
+    pred = {}
+    while not q.isEmpty():
+        weight, (nextVert, predNextvert) = q.firstElement()
+        # The weight in PriorityQueue also contains the heuristicDist, not the actual weight
+        # Calculate the actual weight
+        weight = weight - graph.heuristicDist(nextVert, goalVert)
+        q.delete()
+        if nextVert in visited:
+            pass
+        else:
+            visited.add(nextVert)
+            pred[nextVert] = predNextvert
+            if nextVert == goalVert:
+                print("Astar number of visited: ", len(visited))
+                return reconstructPath(startVert, goalVert, pred)
+            neighbors = graph.getNeighbors(nextVert)
+            for n in neighbors:
+                if type(n) != int:
+                    # NOTICE: From getNeighbors, the order is (vert, weight)
+                    weight_n = n[1]
+                    n = n[0]
+                if n not in visited:
+                    q.insert(weight + weight_n + graph.heuristicDist(n, goalVert), (n, nextVert))
     return "NO PATH"
 
 # ---------------------------------------------------------------
