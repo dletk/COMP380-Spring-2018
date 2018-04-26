@@ -1,7 +1,7 @@
 ######################################
 # RoutePlanning.py
 #
-"""Contains code that finds the shortest route between two points in a
+"""Contains code that finds the shortest route between two points in a 
 graph that is a topological representation of the robot's world.  May need
 to be combined with a more detailed map for localization purposes"""
 
@@ -14,12 +14,11 @@ import time
 
 
 
-
 def routeFinder():
-    """First step: choose a map.
+    """First step: choose a map.  
     Second step: choose an algorithm.
     Third step: loop forever getting start and goal and finding routes."""
-
+    
     print("Which map do you wish to find routes for: Olin-Rice, Macalester Campus, or a grid graph from a file?")
     mapChoice = getUserChoice("Enter o for Olin-Rice, m for Macalester, g for grid", ['o', 'm', 'g', 'olin', 'mac', 'grid'])
     if mapChoice in ['o', 'olin']:
@@ -32,8 +31,6 @@ def routeFinder():
         if not currMap.isOkay():
             print("Grid not build correctly!")
 
-
-
     print("Which algorithm should we use: DFS, BFS, UCS, Dijkstra's, A*, or D*Lite?")
     print("Enter: d for DFS")
     print("       b for BFS")
@@ -41,10 +38,10 @@ def routeFinder():
     print("       j for Dijkstra's")
     print("       a for A*")
     print("       l for D*Lite")
-    algChoice = getUserChoice("[d, b, u, a, j, l]",
+    algChoice = getUserChoice("[d, b, u, a, j, l]", 
                               {'d', 'dfs', 'b', 'bfs',
                                'u', 'ucs',
-                               'j', 'dij', 'dijkstras',
+                               'j', 'dij', 'dijkstras', 
                                'a', 'a*', 'astar',
                                'l', 'lite', 'd*', 'dstar'})
     if algChoice in {'l', 'lite', 'd*', 'dstar'}:
@@ -70,15 +67,15 @@ def chooseDStarVariant():
 def findRoutes(currMap, whichAlg):
     """Repeatedly asks for start and goal and finds the shortest route, using the input search algorithm"""
     numNodes = currMap.getSize()
-    while True:
-
+    while True: 
+        
         promptTxt = "Enter the starting location as an integer between 0 and " + str(numNodes-1) + " (or -1 to quit): "
         validInputs = [str(x) for x in range(-1, numNodes)]
         startTxt = getUserChoice(promptTxt, validInputs)
         startNode = int(startTxt)
         if startNode == -1:
             break
-
+        
         promptTxt = "Enter the goal location as an integer between 0 and " + str(numNodes-1) + " (or -1 to quit): "
         goalTxt = getUserChoice(promptTxt, validInputs)
         goalNode = int(goalTxt)
@@ -88,9 +85,11 @@ def findRoutes(currMap, whichAlg):
         searchAlg = getSearchAlg(whichAlg)
 
         # Run algorithm to find the route
-        # TODO: THIS BLOCK D STAR FROM RUNNING, ASK SUSAN
-        # if whichAlg == 'd* a' or 'd*' not in whichAlg:
-        timeAndRun(searchAlg, currMap, startNode, goalNode)
+        if whichAlg == 'd* b' or whichAlg == 'd* c':
+            searchAlg(currMap, startNode, goalNode)
+        else:
+
+            timeAndRun(searchAlg, currMap, startNode, goalNode)
 
 
 
@@ -138,8 +137,8 @@ def getUserChoice(prompt, validOpts):
         if val in validOpts:
             return val
         print("Invalid input, try again.")
-
-
+        
+    
 
 
 routeFinder()
