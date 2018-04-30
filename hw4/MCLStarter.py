@@ -37,8 +37,9 @@ class MonteCarloLocalizer:
     def initSamples(self):
         """Creates self.numParticles samples, each of which are generated randomly
         with a uniform distribution across the range from minVal to maxVal."""
-        pass
-        # Define this (note random.uniform is helpful here!)
+        for i in range(self.numParticles):
+            newSample = random.uniform(self.minValue, self.maxValue)
+            self.samples.append(newSample)
 
 
     def mclCycle(self, moveData, senseData):
@@ -47,6 +48,23 @@ class MonteCarloLocalizer:
         The movedata is a single number, the distance traveled. The senseData is a string, one of: "wall",
         "no wall", or "unknown"."""
         self.countCycles += 1
+
+        # Set up a new sample list and a new weights list
+        samples = []
+        weights = []
+
+        for i in range(self.numParticles):
+            particle = self.samples[i]
+            newLocation = self.motionUpdate(particle, moveData)
+            newWeight = self.perceptionUpdate(newLocation, senseData)
+            samples.append(newLocation)
+            weights.append(newWeight)
+        weights = self.normalize(weights)
+        (samples, weights) = self.resample(samples, weights)
+
+        self.samples = samples
+        newSampleWeights = weights
+
         # Insert code for these steps here:
         # 1. Set up a new sample list and a new weights list
         # 2. Loop over every particle, and for each particle:
@@ -67,8 +85,12 @@ class MonteCarloLocalizer:
         this updates the old position accordingly, adding a random amount of noise based on a gaussian
         distribution. The updated value is returned
         """
-        pass
-        # You define this one
+        newValue = newY + deltaY + random.gauss(0.0, 1.0)
+
+        while newValue < self.minValue or newValue > self.maxValue:
+            newValue = newY + deltaY + random.gauss(0.0, 1.0)
+
+        return newValue
 
     def perceptionUpdate(self, newParticle, sensorData):
         """This takes in a new particle/location, and the sensor data, which is one of "wall",
@@ -226,5 +248,3 @@ def MCLDemo():
 
 if __name__ == "__main__":
     MCLDemo()
-
-

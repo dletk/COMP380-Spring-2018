@@ -79,6 +79,7 @@ def DFSRoute(graph, startVert, goalVert):
 def UCSRoute(graph, startVert, goalVert):
     """This algorithm search a graph using Uniform Cost Search algorithm"""
     num_q_nodes_removed = 0
+    max_queue_size = -1
     if startVert == goalVert:
         return []
     q = PriorityQueue()
@@ -87,6 +88,8 @@ def UCSRoute(graph, startVert, goalVert):
     pred = {}
     while not q.isEmpty():
         weight, (nextVert, predNextvert) = q.firstElement()
+        if q.getSize() > max_queue_size:
+            max_queue_size = q.getSize()
         q.delete()
         num_q_nodes_removed += 1
         if nextVert in visited:
@@ -97,6 +100,7 @@ def UCSRoute(graph, startVert, goalVert):
             if nextVert == goalVert:
                 print("====> UCS number of visited: ", len(visited))
                 print("====> UCS number of nodes removed from queue: ", num_q_nodes_removed)
+                print("====> UCS max queue size: ", max_queue_size)
                 return reconstructPath(startVert, goalVert, pred)
             neighbors = graph.getNeighbors(nextVert)
             for n in neighbors:
@@ -111,6 +115,7 @@ def UCSRoute(graph, startVert, goalVert):
 def AStarRoute(graph, startVert, goalVert):
     """This algorithm search a graph using A star Search algorithm"""
     num_q_nodes_removed = 0
+    max_queue_size = -1
     if startVert == goalVert:
         return []
     q = PriorityQueue()
@@ -122,6 +127,8 @@ def AStarRoute(graph, startVert, goalVert):
         # The weight in PriorityQueue also contains the heuristicDist, not the actual weight
         # Calculate the actual weight
         weight = weight - graph.heuristicDist(nextVert, goalVert)
+        if q.getSize() > max_queue_size:
+            max_queue_size = q.getSize()
         q.delete()
         num_q_nodes_removed += 1
         if nextVert in visited:
@@ -132,6 +139,7 @@ def AStarRoute(graph, startVert, goalVert):
             if nextVert == goalVert:
                 print("===> Astar number of visited: ", len(visited))
                 print("===> Number of nodes removed from queue: ", num_q_nodes_removed)
+                print("===> Astart max queue size: ", max_queue_size)
                 return reconstructPath(startVert, goalVert, pred)
             neighbors = graph.getNeighbors(nextVert)
             for n in neighbors:
@@ -153,6 +161,7 @@ def dijkstras(graph, startVert, goalVert):
     It returns the best path frmo startVert to goalVert, but otherwise
     startVert does not play into the search."""
     num_q_nodes_removed = 0
+    max_queue_size = -1
     if startVert == goalVert:
         return []
     q = PriorityQueue()
@@ -168,19 +177,21 @@ def dijkstras(graph, startVert, goalVert):
     q.update(cost[goalVert], goalVert)
     while not q.isEmpty():
         (nextCTG, nextVert) = q.firstElement()
+        if q.getSize() > max_queue_size:
+            max_queue_size = q.getSize()
         q.delete()
         num_q_nodes_removed += 1
         visited.add(nextVert)
-        print("--------------")
-        print("Popping", nextVert, nextCTG)
+        # print("--------------")
+        # print("Popping", nextVert, nextCTG)
         neighbors = graph.getNeighbors(nextVert)
         for n in neighbors:
             neighNode = n[0]
             edgeCost = n[1]
             if neighNode not in visited and\
                cost[neighNode] > nextCTG + edgeCost:
-                print("Node", neighNode, "From", nextVert)
-                print("New cost =", nextCTG + edgeCost)
+                # print("Node", neighNode, "From", nextVert)
+                # print("New cost =", nextCTG + edgeCost)
                 cost[neighNode] = nextCTG + edgeCost
                 pred[neighNode] = nextVert
                 q.update( cost[neighNode], neighNode )
@@ -191,6 +202,7 @@ def dijkstras(graph, startVert, goalVert):
     #     print("Best path from ", vert, "to", goalVert, "is", bestPath)
     print("====> Dijkstra number of nodes visited: ", len(visited))
     print("====> Dijkstra number of nodes removed: ", num_q_nodes_removed)
+    print("====> Dijkstra max size of queue: ", max_queue_size)
     finalPath = reconstructPath(goalVert, startVert, pred)
     finalPath.reverse()
     return finalPath
